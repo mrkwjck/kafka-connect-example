@@ -15,11 +15,11 @@ services:
       MSSQL_USER: example
       MSSQL_PASSWORD: P@ssword
     volumes:
-      - ./init/init-mssql.sql:/usr/config/setup.sql
+      - ./setup/setup-mssql.sql:/usr/config/setup.sql
     ports:
-      - "1433:1433"
-    networks:
-      - kafka-connect-example-network
+      - 1433:1433
+    expose:
+      - 1433
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
@@ -40,9 +40,21 @@ services:
       KAFKA_CREATE_TOPICS: "ORDERS:10:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/connect-standalone.properties:/opt/kafka/config/connect-standalone.properties
+      - ./config/connect-mssql-source.properties:/opt/kafka/config/connect-mssql-source.properties
+      - ./config/connect-log4j.properties:/opt/kafka/config/connect-log4j.properties
+      - ./libs/jdbc-plugin:/opt/kafka/libs/jdbc-plugin
+      - ./libs/jdbc-drivers/mssql-jdbc-12.4.2.jre11.jar:/opt/kafka/libs/mssql-jdbc-12.4.2.jre11.jar
+      - ./libs/jdbc-drivers/postgresql-42.2.10.jar:/opt/kafka/libs/postgresql-42.2.10.jar
     ports:
       - 9092:9092
+      - 8083:8083
     expose:
       - 9093
+      - 8083
     depends_on:
       - zookeeper
+      - mssql
+    command:
+      - /usr/bin/start-kafka.sh
+      - /opt/kafka/bin/connect-standalone.sh /opt/kafka/config/connect-standalone.properties /opt/kafka/config/connect-mssql-source.properties

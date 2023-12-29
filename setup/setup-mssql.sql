@@ -25,15 +25,15 @@ CREATE TABLE example.cart
     id                      BIGINT IDENTITY (1, 1),
     product_id              BIGINT NOT NULL,
     quantity                INT NOT NULL DEFAULT 1,
+    created_timestamp       DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT pk_cart PRIMARY KEY (id),
-    CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES example.product (id) ON DELETE NO ACTION,
-    CONSTRAINT unique_product UNIQUE (product_id)
+    CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES example.product (id) ON DELETE NO ACTION
 );
 GO
 
 CREATE VIEW example.cart_product AS
-    SELECT p.id as product_id, p.name as product_name, c.quantity
+    SELECT c.created_timestamp AS cart_created_timestamp, p.id AS product_id, p.name AS product_name, c.quantity
     FROM example.cart c JOIN example.product p on c.product_id = p.id;
 GO
 
