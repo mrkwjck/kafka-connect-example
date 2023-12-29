@@ -1,0 +1,48 @@
+version: '3.7'
+
+networks:
+  kafka-connect-example-network:
+    driver: bridge
+
+services:
+  mssql:
+    image: mcmoe/mssqldocker
+    container_name: kafka-connect-example-mssql
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: P@ssword
+      MSSQL_DB: example
+      MSSQL_USER: example
+      MSSQL_PASSWORD: P@ssword
+    volumes:
+      - ./init/init-mssql.sql:/usr/config/setup.sql
+    ports:
+      - "1433:1433"
+    networks:
+      - kafka-connect-example-network
+
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: kafka-connect-example-zookeeper
+    ports:
+      - 2181:2181
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka-connect-example-kafka
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_CREATE_TOPICS: "ORDERS:10:1"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9092:9092
+    expose:
+      - 9093
+    depends_on:
+      - zookeeper
