@@ -131,7 +131,7 @@ In order to run the example you can follow the steps below.
 
 1. Table timestamp persistance
 
-    The last timestamp is persisted between container restarts in `/tmp/connect.offsets` file.
+    In standalone mode offset is persisted between container restarts in `/tmp/connect.offsets` file. It's possible to configure different file path. In distributed mode it is saved in kafka topic as described in [connect configuration documentation](https://docs.confluent.io/platform/current/connect/references/allconfigs.html)
 
     Example connect container log line:
 
@@ -144,5 +144,3 @@ In order to run the example you can follow the steps below.
     ```text
     ur[TxpK["mssql-connector",{"protocol":"1","table":"example.example.cart_product"}]uq~7{"timestamp_nanos":410000000,"timestamp":1704899400410}x
     ```
-
-    There is a number of different offset backing stores implementations available in [kafka connect repository](https://github.com/a0x8o/kafka/tree/master/connect/runtime/src/main/java/org/apache/kafka/connect/storage)
