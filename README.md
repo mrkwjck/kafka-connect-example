@@ -128,3 +128,19 @@ In order to run the example you can follow the steps below.
       }
     }
     ```
+
+1. Table timestamp persistance
+
+    The last timestamp is persisted between container restarts in `/tmp/connect.offsets` file.
+
+    Example connect container log line:
+
+    ```text
+    INFO Starting FileOffsetBackingStore with file /tmp/connect.offsets (org.apache.kafka.connect.storage.FileOffsetBackingStore:58)
+    ```
+
+    Example content of connect.offsets file:
+
+    ```text
+    ur[TxpK["mssql-connector",{"protocol":"1","table":"example.example.cart_product"}]uq~7{"timestamp_nanos":410000000,"timestamp":1704899400410}x
+    ```
