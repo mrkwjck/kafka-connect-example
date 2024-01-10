@@ -144,3 +144,5 @@ In order to run the example you can follow the steps below.
     ```text
     ur[TxpK["mssql-connector",{"protocol":"1","table":"example.example.cart_product"}]uq~7{"timestamp_nanos":410000000,"timestamp":1704899400410}x
     ```
+
+    There is a number of different offset backing stores implementations available in [kafka connect repository](https://github.com/a0x8o/kafka/tree/master/connect/runtime/src/main/java/org/apache/kafka/connect/storage)
